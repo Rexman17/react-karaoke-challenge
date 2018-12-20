@@ -2,11 +2,10 @@ import React from 'react';
 import Song from './Song'
 
 const SongList = (props) => {
-  console.log("SongList props:", props);
+console.log("SongList props:", props);
 
-  // map over the songs to render each one
-  const mappedSongs = props.songs.map((songObj) => {
-    return <Song song={songObj} key={songObj.id} handlePlay={props.handlePlay}/>
+  const mappedSongs = props.songs.map((song) => {
+    return <Song song={song} key={song.id} handlePlay={props.handlePlay}/>
   })
 
   return (
@@ -16,6 +15,7 @@ const SongList = (props) => {
           <th>Title</th>
           <th>Singer</th>
           <th>▶</th>
+
         </tr>
 
         {mappedSongs}

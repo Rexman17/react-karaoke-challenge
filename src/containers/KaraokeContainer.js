@@ -4,52 +4,61 @@ import SongList from '../components/SongList';
 import KaraokeDisplay from '../components/KaraokeDisplay';
 // import songs from '../data/songs';
 
-const songsEndPoint = 'http://localhost:4000/songs'
+const endPoint = 'http://localhost:4000/users/1/songs'
 class KaraokeContainer extends Component {
+
+  // set initial state
   state = {
     songs: [],
-    songPlaying: '',
-    filterTerm: ''
+    currentSong: '',
+    searchTerm: ''
   }
 
+  // fetch inside componentDidMount so data is there upon page load
   componentDidMount() {
-    fetch(songsEndPoint)
+    fetch(endPoint)
       .then(r => r.json())
-      .then(arrayofSongObjs => {
-        // Update state
+      .then(songs => {
         this.setState({
-          songs: arrayofSongObjs
-        }, () => console.log("state is now:", this.state))
+          songs: songs
+        })
       })
   }
+  // ensured songs data came thru via react console
 
   handlePlay = (id) => {
-    console.log("triggered handlePlay");
-    // find the song that was clicked based on it's id sent back in the callback
-    let foundSong = this.state.songs.find((song) => song.id === id)
-    // debugger
+    // console.log("i got this id", id);
+    // use this id to find the currentSong and update state and send that song's details to KaraokeDisplay
+    let clickedSong = this.state.songs.find((song) => {
+      return song.id === id
+    })
+    // console.log(clickedSong);
+    // update state w this song
     this.setState({
-      songPlaying: foundSong
-    }, () => console.log("Song playing is now:", this.state.songPlaying))
+      currentSong: clickedSong
+    })
   }
 
-  // sent the event from Filter.js, now we want the event.target.value to get the filter term
   handleFilter = (event) => {
     // console.log(event.target.value);
-    this.setState({ filterTerm: event.target.value })
+    // update state w this value
+    this.setState({
+      searchTerm: event.target.value
+    })
   }
 
   render() {
     const filteredSongs = this.state.songs.filter((song) => {
-      return song.title.toLowerCase().includes(this.state.filterTerm.toLowerCase())
+      return song.title.toLowerCase().includes(this.state.searchTerm.toLowerCase())
     })
+
     return (
       <div className="karaoke-container">
         <div className="sidebar">
-          <Filter handleFilter={this.handleFilter} />
+          <Filter handleFilter={this.handleFilter} searchTerm={this.state.searchTerm}/>
           <SongList songs={filteredSongs} handlePlay={this.handlePlay}/>
         </div>
-        <KaraokeDisplay songPlaying={this.state.songPlaying}/>
+        <KaraokeDisplay currentSong={this.state.currentSong}/>
       </div>
     );
   }

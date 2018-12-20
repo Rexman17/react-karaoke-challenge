@@ -1,8 +1,7 @@
 import React from 'react';
 
 const Song = (props) => {
-  // console.log("Song props are:", props);
-
+console.log("Song props:", props)
   return (
     <tr className="song">
       <td>{props.song.title}</td>
